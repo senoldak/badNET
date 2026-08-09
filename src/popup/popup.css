@@ -24,13 +24,21 @@
   padding: 0;
 }
 
-body {
+/* Hide scrollbars completely across Chrome popup window */
+html, body {
   width: 290px;
   background-color: var(--bg-dark);
   color: var(--text-primary);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   padding: 12px;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  background: transparent;
 }
 
 .app-container {
