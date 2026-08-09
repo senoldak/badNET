@@ -7,6 +7,7 @@
 ## ⚡ Comprehensive Feature Suite
 
 - **🌐 Fast.com-Style Deep Speed Benchmark**: Multi-payload streaming speed tester measuring exact bandwidth, **Ping Latency (ms)**, and **Peak Download Speed (Mbps)**.
+- **🛡️ Domain Whitelist & Site Exemption Manager**: One-click **Disable on Current Site** button in the popup toolbar to easily exclude specific domains (e.g. `netflix.com`, `twitch.tv`) from quality downscaling.
 - **⚙️ 360p Default Max Quality Ceiling**: Pre-configured with a default **360p Maximum Quality Ceiling** to preserve bandwidth out-of-the-box, with instant options to select 480p, 720p, 1080p, or 4K.
 - **🎬 Auto Ad-Quality Saver**: Detects video advertisements (YouTube & general HTML5) and automatically drops quality to **360p** during ads, restoring HD quality once the video resumes.
 - **⌨️ Global Keyboard Shortcuts**:
@@ -19,10 +20,6 @@
 - **💾 Data & Quota Saver Counter**: Tracks saved bandwidth (MB / GB) in real-time.
 - **🔋 Battery Saver Mode**: Dynamically caps maximum video quality at 360p/720p to reduce GPU load, heating, and battery consumption on laptops.
 - **📈 EMA Speed Smoothing & Safety Margin**: Smooths out network fluctuations using Exponential Moving Average (EMA) and applies a 20% safety margin.
-- **▶️ YouTube Player API Integration**: Direct main-world injection to control YouTube player resolutions (`setPlaybackQualityRange`, `setVideoQuality`).
-- **🛡️ Single-Source Video Fallbacks**:
-  - **Canvas Downscaling**: Renders single-source HD videos onto a downscaled HTML5 Canvas on slow connections.
-  - **Smart Pre-Bufferer**: Monitors video buffer health (`buffered.end`) and dynamically adjusts `playbackRate` to prevent micro-stuttering.
 
 ---
 
@@ -39,13 +36,6 @@
 
 ---
 
-## ⌨️ Keyboard Shortcuts
-
-- `Alt + A` — Toggle Audio-Only Mode on/off.
-- `Alt + S` — Force immediate network speed re-test.
-
----
-
 ## 📦 Installation Guide
 
 1. Clone or download this repository.
@@ -53,36 +43,6 @@
 3. Enable **Developer mode** using the toggle in the top right corner.
 4. Click **Load unpacked**.
 5. Select the `badNET` root directory.
-
----
-
-## 📂 Architecture & Project Structure
-
-```
-badNET/
-├── manifest.json                # Manifest V3 extension configuration & shortcuts
-├── README.md                    # Comprehensive documentation
-└── src/
-    ├── background/
-    │   ├── service-worker.js    # Service worker handling notifications & shortcuts
-    │   ├── speed-tester.js      # Fast.com streaming speed tester & decision engine
-    │   ├── data-saver.js        # Data savings counter & quota estimator
-    │   └── sleep-timer.js      # Sleep timer manager for auto video pausing
-    ├── content/
-    │   ├── content-script.js    # Combined content script, ad-detector & fallbacks
-    │   └── youtube-inject.js    # Main-world script for YouTube Player API integration
-    ├── popup/
-    │   ├── popup.html           # Dark-themed extension popup markup with Plus Jakarta Sans
-    │   ├── popup.css            # Extension popup styling
-    │   └── popup.js             # Extension popup interactive logic with Canvas graph
-    ├── icons/
-    │   ├── icon-16.png          # Chrome Toolbar Icon 16x16
-    │   ├── icon-32.png          # Chrome Toolbar Icon 32x32
-    │   ├── icon-48.png          # Extensions Management Icon 48x48
-    │   └── icon-128.png         # Web Store Icon 128x128
-    └── shared/
-        └── constants.js         # Resolution mappings & messaging constants
-```
 
 ---
 
