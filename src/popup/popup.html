@@ -34,7 +34,7 @@
       <section class="card speed-card">
         <div class="card-header">
           <span class="card-label">Live Bandwidth</span>
-          <button id="retestBtn" class="retest-btn" title="Force Speed Test Now">⚡ Test Speed</button>
+          <button id="retestBtn" class="retest-btn" title="Force Detailed Fast.com Speed Test">⚡ Test Speed</button>
         </div>
         
         <div class="graph-wrapper">
@@ -46,6 +46,19 @@
           <div class="speed-unit-group">
             <span class="unit-text">Mbps</span>
             <span class="safety-tag">Safe EMA</span>
+          </div>
+        </div>
+
+        <!-- Telemetry Details Strip -->
+        <div class="telemetry-strip">
+          <div class="telemetry-item">
+            <span class="telemetry-label">Ping Latency</span>
+            <span class="telemetry-val" id="pingVal">-- ms</span>
+          </div>
+          <div class="telemetry-divider"></div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Peak Download</span>
+            <span class="telemetry-val" id="rawSpeedVal">-- Mbps</span>
           </div>
         </div>
       </section>
@@ -96,14 +109,14 @@
       <!-- Controls Form -->
       <section class="controls-card">
         <div class="control-row">
-          <label for="maxCapSelect" class="control-label">Max Quality Ceiling</label>
+          <label for="maxCapSelect" class="control-label">Max Quality Ceiling (Default: 360p)</label>
           <div class="select-wrapper">
             <select id="maxCapSelect">
-              <option value="2160">No Limit (Up to 4K)</option>
-              <option value="1080">Max 1080p (Full HD)</option>
-              <option value="720">Max 720p (HD)</option>
+              <option value="360" selected>Max 360p (Default)</option>
               <option value="480">Max 480p</option>
-              <option value="360">Max 360p</option>
+              <option value="720">Max 720p (HD)</option>
+              <option value="1080">Max 1080p (Full HD)</option>
+              <option value="2160">No Limit (Up to 4K)</option>
             </select>
           </div>
         </div>

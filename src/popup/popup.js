@@ -9,6 +9,8 @@ const savedDataValue = document.getElementById('savedDataValue');
 const audioToggle = document.getElementById('audioToggle');
 const sleepTimerSelect = document.getElementById('sleepTimerSelect');
 const retestBtn = document.getElementById('retestBtn');
+const pingVal = document.getElementById('pingVal');
+const rawSpeedVal = document.getElementById('rawSpeedVal');
 const graphCanvas = document.getElementById('speedGraph');
 const ctx = graphCanvas ? graphCanvas.getContext('2d') : null;
 
@@ -69,6 +71,9 @@ function drawSpeedGraph(history = []) {
 function updateUI(status) {
   if (!status) return;
   speedValue.textContent = status.mbps || '--';
+  if (pingVal) pingVal.textContent = status.pingMs ? `${status.pingMs} ms` : '-- ms';
+  if (rawSpeedVal) rawSpeedVal.textContent = status.rawMbps ? `${status.rawMbps} Mbps` : '-- Mbps';
+
   if (status.targetQuality) {
     const badgeText = status.audioOnly 
       ? `Audio-Only Mode (Active)`

@@ -17,9 +17,11 @@ const sleepTimer = new SleepTimerManager(() => {
 
 let currentStatus = {
   mbps: 10,
-  targetQuality: determineQuality(10),
+  rawMbps: 10,
+  pingMs: 25,
+  targetQuality: determineQuality(10, 360),
   autoMode: true,
-  maxCapHeight: 2160,
+  maxCapHeight: 360, // Default max cap is 360p
   batterySaver: false,
   audioOnly: false,
   notificationsEnabled: true,
@@ -30,8 +32,12 @@ let currentStatus = {
 let previousQualityHeight = null;
 
 async function updateNetworkStatus() {
-  const mbps = await measureSpeed();
+  const speedMetrics = await measureSpeed();
+  const mbps = typeof speedMetrics === 'object' ? speedMetrics.safeMbps : speedMetrics;
   
+  currentStatus.rawMbps = typeof speedMetrics === 'object' ? speedMetrics.rawMbps : mbps;
+  currentStatus.pingMs = typeof speedMetrics === 'object' ? speedMetrics.pingMs : 25;
+
   currentStatus.speedHistory.push(mbps);
   if (currentStatus.speedHistory.length > 10) {
     currentStatus.speedHistory.shift();
@@ -39,7 +45,7 @@ async function updateNetworkStatus() {
 
   let effectiveCap = currentStatus.maxCapHeight;
   if (currentStatus.batterySaver) {
-    effectiveCap = Math.min(effectiveCap, 720);
+    effectiveCap = Math.min(effectiveCap, 360);
   }
 
   const targetQuality = determineQuality(mbps, effectiveCap);
