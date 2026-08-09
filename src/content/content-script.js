@@ -155,14 +155,25 @@ function applyQualityToGeneralVideos(targetQuality) {
   });
 }
 
+function isCurrentSiteExempted(exemptedDomains) {
+  if (!exemptedDomains || !Array.isArray(exemptedDomains)) return false;
+  const currentHost = window.location.hostname;
+  return exemptedDomains.some(domain => currentHost.includes(domain));
+}
+
 function applyQuality(status) {
   if (!status) return;
+
+  // If current site is exempted/whitelisted, do not modify video quality
+  if (isCurrentSiteExempted(status.exemptedDomains)) {
+    handleAudioOnlyMode(false);
+    return;
+  }
 
   if (status.audioOnly !== undefined) {
     handleAudioOnlyMode(status.audioOnly);
   }
 
-  // Force low quality (360p) during video ads to save data
   if (isAdPlaying() && status.autoMode) {
     const adQuality = { quality: '360p', ytQuality: 'medium', height: 360 };
     if (window.location.hostname.includes('youtube.com')) {
@@ -186,7 +197,6 @@ function applyQuality(status) {
   }
 }
 
-// Periodically check for video ads every 2 seconds
 setInterval(() => {
   if (isAdPlaying()) {
     applyQuality({ autoMode: true, targetQuality: { quality: '360p', ytQuality: 'medium', height: 360 } });

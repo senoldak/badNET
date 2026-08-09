@@ -21,11 +21,12 @@ let currentStatus = {
   pingMs: 25,
   targetQuality: determineQuality(10, 360),
   autoMode: true,
-  maxCapHeight: 360, // Default max cap is 360p
+  maxCapHeight: 360,
   batterySaver: false,
   audioOnly: false,
   notificationsEnabled: true,
   sleepTimerMinutes: 0,
+  exemptedDomains: [], // Array of whitelisted/disabled domain strings
   speedHistory: [10, 12, 11, 14, 10, 13, 15]
 };
 
@@ -54,7 +55,6 @@ async function updateNetworkStatus() {
     currentStatus.targetQuality = targetQuality;
   }
 
-  // Desktop notification on significant speed/quality drop
   if (previousQualityHeight && targetQuality.height < previousQualityHeight && currentStatus.notificationsEnabled) {
     if (typeof chrome !== 'undefined' && chrome.notifications) {
       chrome.notifications.create({
@@ -89,7 +89,6 @@ async function updateNetworkStatus() {
   }
 }
 
-// Global Keyboard Commands Listener
 if (typeof chrome !== 'undefined' && chrome.commands) {
   chrome.commands.onCommand.addListener((command) => {
     if (command === 'toggle-audio-only') {
@@ -120,6 +119,18 @@ if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage)
     } else if (message.type === MESSAGE_TYPES.SET_SLEEP_TIMER) {
       currentStatus.sleepTimerMinutes = message.payload.minutes;
       sleepTimer.setTimer(currentStatus.sleepTimerMinutes);
+      sendResponse({ ...currentStatus, totalSavedMB: dataSaver.totalSavedMB });
+    } else if (message.type === MESSAGE_TYPES.TOGGLE_SITE_EXEMPTION) {
+      const domain = message.payload.domain;
+      if (domain) {
+        const index = currentStatus.exemptedDomains.indexOf(domain);
+        if (index > -1) {
+          currentStatus.exemptedDomains.splice(index, 1);
+        } else {
+          currentStatus.exemptedDomains.push(domain);
+        }
+        updateNetworkStatus();
+      }
       sendResponse({ ...currentStatus, totalSavedMB: dataSaver.totalSavedMB });
     } else if (message.type === MESSAGE_TYPES.SET_MANUAL_OVERRIDE) {
       currentStatus.autoMode = message.payload.autoMode;

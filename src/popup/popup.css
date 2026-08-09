@@ -8,6 +8,7 @@
   --accent-indigo: #818cf8;
   --accent-emerald: #34d399;
   --accent-purple: #c084fc;
+  --accent-rose: #fb7185;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-tertiary: #64748b;
@@ -87,6 +88,50 @@ body {
   font-size: 0.68rem;
   color: var(--text-tertiary);
   font-weight: 500;
+}
+
+/* Site Exemption Bar */
+.site-exemption-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(19, 27, 46, 0.6);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+}
+
+.current-site-label {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.exempt-btn {
+  background: rgba(251, 113, 133, 0.12);
+  border: 1px solid rgba(251, 113, 133, 0.3);
+  color: var(--accent-rose);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.exempt-btn:hover {
+  background: rgba(251, 113, 133, 0.25);
+  border-color: var(--accent-rose);
+}
+
+.exempt-btn.active {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--accent-emerald);
 }
 
 /* Retest Button */
@@ -216,12 +261,6 @@ input:checked + .toggle-track:before {
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--accent-cyan);
-}
-
-.safety-tag {
-  font-size: 0.6rem;
-  color: var(--text-tertiary);
-  font-weight: 500;
 }
 
 /* Telemetry Strip */

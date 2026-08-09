@@ -11,8 +11,30 @@ const sleepTimerSelect = document.getElementById('sleepTimerSelect');
 const retestBtn = document.getElementById('retestBtn');
 const pingVal = document.getElementById('pingVal');
 const rawSpeedVal = document.getElementById('rawSpeedVal');
+const currentSiteLabel = document.getElementById('currentSiteLabel');
+const toggleExemptBtn = document.getElementById('toggleExemptBtn');
+
 const graphCanvas = document.getElementById('speedGraph');
 const ctx = graphCanvas ? graphCanvas.getContext('2d') : null;
+
+let currentDomain = '';
+
+function getActiveTabDomain() {
+  if (typeof chrome !== 'undefined' && chrome.tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+      if (tabs.length > 0 && tabs[0].url) {
+        try {
+          const url = new URL(tabs[0].url);
+          currentDomain = url.hostname.replace('www.', '');
+          currentSiteLabel.textContent = `Site: ${currentDomain}`;
+          chrome.runtime.sendMessage({ type: MESSAGE_TYPES.GET_SPEED_STATUS }, updateUI);
+        } catch (e) {
+          currentSiteLabel.textContent = 'Site: Unknown';
+        }
+      }
+    });
+  }
+}
 
 function drawSpeedGraph(history = []) {
   if (!ctx || history.length === 0) return;
@@ -74,14 +96,28 @@ function updateUI(status) {
   if (pingVal) pingVal.textContent = status.pingMs ? `${status.pingMs} ms` : '-- ms';
   if (rawSpeedVal) rawSpeedVal.textContent = status.rawMbps ? `${status.rawMbps} Mbps` : '-- Mbps';
 
+  const isExempted = status.exemptedDomains && status.exemptedDomains.includes(currentDomain);
+  if (toggleExemptBtn) {
+    if (isExempted) {
+      toggleExemptBtn.textContent = 'Enable Here';
+      toggleExemptBtn.classList.add('active');
+    } else {
+      toggleExemptBtn.textContent = 'Disable Here';
+      toggleExemptBtn.classList.remove('active');
+    }
+  }
+
   if (status.targetQuality) {
-    const badgeText = status.audioOnly 
+    const badgeText = isExempted
+      ? `Disabled on ${currentDomain}`
+      : status.audioOnly 
       ? `Audio-Only Mode (Active)`
       : status.autoMode 
       ? `Auto Mode (${status.targetQuality.quality})`
       : `Manual Override (${status.targetQuality.quality})`;
     qualityBadge.querySelector('.badge-text').textContent = badgeText;
   }
+
   autoToggle.checked = status.autoMode;
   overrideSelect.disabled = status.autoMode;
   if (status.targetQuality) {
@@ -118,7 +154,17 @@ function getYTQuality(quality) {
 }
 
 if (typeof chrome !== 'undefined' && chrome.runtime) {
-  chrome.runtime.sendMessage({ type: MESSAGE_TYPES.GET_SPEED_STATUS }, updateUI);
+  getActiveTabDomain();
+
+  if (toggleExemptBtn) {
+    toggleExemptBtn.addEventListener('click', () => {
+      if (!currentDomain) return;
+      chrome.runtime.sendMessage({
+        type: MESSAGE_TYPES.TOGGLE_SITE_EXEMPTION,
+        payload: { domain: currentDomain }
+      }, updateUI);
+    });
+  }
 
   retestBtn.addEventListener('click', () => {
     retestBtn.textContent = ' Testing...';
