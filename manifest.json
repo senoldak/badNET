@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "badNET - Auto Video Quality",
+  "version": "1.0.0",
+  "description": "Auto-adjust video quality based on your real-time internet speed.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "commands": {
+    "toggle-audio-only": {
+      "suggested_key": {
+        "default": "Alt+A"
+      },
+      "description": "Toggle Audio-Only Mode"
+    },
+    "force-speed-test": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "Force Speed Test Now"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content-script.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "src/icons/icon-16.png",
+      "32": "src/icons/icon-32.png",
+      "48": "src/icons/icon-48.png",
+      "128": "src/icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "src/icons/icon-16.png",
+    "32": "src/icons/icon-32.png",
+    "48": "src/icons/icon-48.png",
+    "128": "src/icons/icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content/youtube-inject.js"],
+      "matches": ["*://*.youtube.com/*"]
+    }
+  ]
+}
